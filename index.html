@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>웹 메트로놈</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="metronome">
+        <h1>웹 메트로놈</h1>
+        <div class="bpm-display">
+            <span id="bpm-output">120</span> BPM
+        </div>
+        <div class="bpm-slider">
+            <input type="range" id="bpm-slider" min="40" max="240" value="120">
+        </div>
+        <button id="start-stop-btn">시작</button>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
