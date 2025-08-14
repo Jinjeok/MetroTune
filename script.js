@@ -71,6 +71,7 @@ function initialize() {
     updateBeatStates();
     createBeatIndicators();
     createRhythmGrid();
+    updateBpm(bpm);
 }
 
 // --- 이벤트 리스너 ---

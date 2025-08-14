@@ -104,11 +104,26 @@ html, body {
 .time-signature { margin-top: 20px; font-size: 1em; }
 .time-signature input { width: 50px; font-size: 1em; text-align: center; margin-left: 10px; }
 #beat-indicator-container { display: flex; justify-content: center; gap: 10px; margin-top: 20px; height: 24px; }
-.beat-dot { width: 20px; height: 20px; border-radius: 50%; background-color: #e0e0e0; transition: all 0.1s ease-in-out; }
+
+/* 수정된 부분 */
+.beat-dot {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background-color: #e0e0e0;
+    transition: all 0.1s ease-in-out;
+    cursor: pointer; /* 마우스 포인터 변경 */
+}
+
+.beat-dot:hover {
+    filter: brightness(0.9); /* 호버 시 색상 약간 어둡게 */
+}
+
 .beat-dot.state-accent { background-color: #4CAF50; }
 .beat-dot.state-tick { background-color: #2196F3; }
 .beat-dot.state-silent { background-color: #cccccc; }
 .beat-dot.active { transform: scale(1.2); box-shadow: 0 0 10px rgba(0,0,0,0.5); }
+
 #chord-display { font-size: 4em; font-weight: bold; color: #333; height: 100px; display: flex; justify-content: center; align-items: center; margin-top: 20px;}
 .chord-input-area { display: flex; align-items: center; gap: 10px; margin-top: 10px; }
 #chord-input { flex-grow: 1; width: auto; padding: 10px; border: 1px solid #ccc; border-radius: 5px; font-family: sans-serif; font-size: 1em; resize: vertical; }
