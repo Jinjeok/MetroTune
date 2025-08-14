@@ -77,6 +77,9 @@ function initialize() {
 // --- 이벤트 리스너 ---
 
 masterVolumeSlider.addEventListener('input', e => { masterGain.gain.value = e.target.value; masterVolumePercentage.textContent = `${Math.round(e.target.value * 100)}%`; });
+bpmSlider.addEventListener('input', e => {
+    updateBpm(Number(e.target.value));
+});
 beatVolumeSlider.addEventListener('input', e => { beatGain.gain.value = e.target.value; beatVolumePercentage.textContent = `${Math.round(e.target.value * 100)}%`; });
 rhythmVolumeSlider.addEventListener('input', e => { rhythmGain.gain.value = e.target.value; rhythmVolumePercentage.textContent = `${Math.round(e.target.value * 100)}%`; });
 chordVolumeSlider.addEventListener('input', e => { chordGain.gain.value = e.target.value; chordVolumePercentage.textContent = `${Math.round(e.target.value * 100)}%`; });
