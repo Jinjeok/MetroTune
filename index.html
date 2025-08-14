@@ -9,12 +9,24 @@
 <body>
     <div class="metronome">
         <h1>웹 메트로놈</h1>
-        <div class="bpm-display">
-            <span id="bpm-output">120</span> BPM
+        <div class="bpm-controls">
+            <button id="bpm-minus-btn" class="bpm-btn">-</button>
+            <div class="bpm-display">
+                <span id="bpm-output">120</span> BPM
+            </div>
+            <button id="bpm-plus-btn" class="bpm-btn">+</button>
         </div>
         <div class="bpm-slider">
             <input type="range" id="bpm-slider" min="40" max="240" value="120">
         </div>
+
+        <div class="time-signature">
+            <label for="beats-per-measure">마디 당 박자:</label>
+            <input type="number" id="beats-per-measure" value="4" min="1" max="16">
+        </div>
+
+        <div id="beat-indicator-container"></div>
+
         <button id="start-stop-btn">시작</button>
     </div>
 

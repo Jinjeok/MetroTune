@@ -16,18 +16,56 @@ body {
     width: 300px;
 }
 
+/* ... */
+
+/* 기존 .bpm-display 스타일은 아래 .bpm-controls 내부의 것으로 대체 */
+.bpm-controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px; /* 요소 사이의 간격 */
+    margin-bottom: 20px;
+}
+
 .bpm-display {
     font-size: 2em;
-    margin-bottom: 20px;
+    /* width: 120px; 이 줄을 삭제합니다. */
+    white-space: nowrap; /* 글자가 길어져도 줄바꿈을 방지합니다. */
+    text-align: center;
+}
+
+.bpm-btn {
+    width: 45px; /* 너비 살짝 조절 */
+    height: 45px; /* 높이 살짝 조절 */
+    font-size: 1.8em;
+    font-weight: bold;
+    color: white;
+    background-color: #4CAF50;
+    border: none;
+    border-radius: 10px; /* 원 모양(50%)에서 둥근 사각형으로 변경 */
+    cursor: pointer;
+    transition: all 0.1s;
+    user-select: none;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    line-height: 1;
+}
+
+
+.bpm-btn:hover {
+    background-color: #45a049; /* 호버 시 약간 어둡게 */
+}
+
+.bpm-btn:active {
+    background-color: #3e8e41; /* 클릭 시 더 어둡게 */
+    transform: scale(0.95);
 }
 
 #bpm-output {
     font-weight: bold;
 }
-
-.bpm-slider input {
-    width: 100%;
-}
+/* ... */
 
 button {
     background-color: #4CAF50; /* 초록색 */
@@ -45,4 +83,88 @@ button {
 
 button:hover {
     background-color: #45a049;
+}
+
+/* ... 기존 CSS 코드 ... */
+
+.time-signature {
+    margin-top: 20px;
+    font-size: 1em;
+}
+
+.time-signature input {
+    width: 50px;
+    font-size: 1em;
+    text-align: center;
+    margin-left: 10px;
+}
+
+
+#beat-indicator-container {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 20px;
+    height: 20px; /* 컨테이너 높이 고정 */
+}
+
+.beat-dot {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background-color: #e0e0e0;
+    transition: background-color 0.1s; /* 부드러운 색상 전환 효과 */
+}
+
+.beat-dot.active {
+    background-color: #4CAF50; /* 활성화 됐을 때의 색상 */
+}
+
+
+/* ... 기존 CSS 코드 ... */
+
+#beat-indicator-container {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 20px;
+    height: 24px; /* 점 크기가 커지는 것에 대비해 높이 조절 */
+}
+
+.beat-dot {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background-color: #e0e0e0;
+    transition: all 0.1s ease-in-out; /* 부드러운 전환 효과 */
+    cursor: pointer; /* 클릭 가능하다는 것을 표시 */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.2em;
+    color: white;
+    font-weight: bold;
+    user-select: none; /* 텍스트 선택 방지 */
+}
+
+.beat-dot:hover {
+    opacity: 0.8;
+}
+
+/* 상태별 스타일 */
+.beat-dot.state-accent {
+    background-color: #4CAF50; /* 강세 (초록) */
+}
+.beat-dot.state-tick {
+    background-color: #2196F3; /* 약세 (파랑) */
+}
+.beat-dot.state-silent {
+    background-color: #cccccc; /* 쉼 (회색) */
+}
+
+
+/* 현재 연주 중인 비트를 표시하는 스타일 */
+.beat-dot.active {
+    transform: scale(1.2); /* 활성화 됐을 때 약간 커짐 */
+    box-shadow: 0 0 10px rgba(0,0,0,0.5);
 }
