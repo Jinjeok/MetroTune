@@ -7,23 +7,64 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <div class="global-controls-container">
+        <div class="volume-control-wrapper" id="master-volume-control">
+            <span>MASTER</span>
+            <input type="range" id="master-volume-slider" min="0" max="1" value="0.5" step="0.01">
+            <span id="master-volume-percentage">50%</span>
+        </div>
+        <div class="volume-control-wrapper" id="beat-volume-control">
+            <span>BEAT</span>
+            <input type="range" id="beat-volume-slider" min="0" max="1" value="1.0" step="0.01">
+            <span id="beat-volume-percentage">100%</span>
+        </div>
+        <div class="volume-control-wrapper hidden" id="rhythm-volume-control">
+            <span>RHYTHM</span>
+            <input type="range" id="rhythm-volume-slider" min="0" max="1" value="1.0" step="0.01">
+            <span id="rhythm-volume-percentage">100%</span>
+        </div>
+        <div class="volume-control-wrapper hidden" id="chord-volume-control">
+            <span>CHORD</span>
+            <input type="range" id="chord-volume-slider" min="0" max="1" value="0.7" step="0.01">
+            <span id="chord-volume-percentage">70%</span>
+        </div>
+    </div>
+
     <div class="app-container">
+        <div class="metronome rhythm-module hidden">
+            <h2>16-Beat Pattern</h2>
+            <div class="rhythm-grid"></div>
+            <div class="rhythm-controls">
+                <div class="rhythm-accent-toggle">
+                    <input type="checkbox" id="rhythm-accent-checkbox" checked>
+                    <label for="rhythm-accent-checkbox">강약</label>
+                </div>
+                <div class="random-rhythm-toggle">
+                    <input type="checkbox" id="random-rhythm-checkbox">
+                    <label for="random-rhythm-checkbox">랜덤</label>
+                </div>
+            </div>
+            <div class="rhythm-module-footer">
+                <p>각 셀을 클릭하여 리듬을 만드세요.</p>
+            </div>
+        </div>
 
         <div class="metronome main-metronome">
             <h1>MetroTune</h1>
+            <div class="bpm-presets">
+                <button class="preset-btn" data-bpm="60">60</button>
+                <button class="preset-btn" data-bpm="80">80</button>
+                <button class="preset-btn" data-bpm="100">100</button>
+                <button class="preset-btn" data-bpm="120">120</button>
+            </div>
+
             <div class="bpm-controls">
                 <button id="bpm-minus-btn" class="bpm-btn">-</button>
-                <div class="bpm-display">
-                    <span id="bpm-output">120</span> BPM
-                </div>
+                <div class="bpm-display"><span id="bpm-output">120</span> BPM</div>
                 <button id="bpm-plus-btn" class="bpm-btn">+</button>
             </div>
             <div class="bpm-slider">
                 <input type="range" id="bpm-slider" min="40" max="240" value="120">
-            </div>
-            <div class="volume-slider">
-                <span>🔊</span>
-                <input type="range" id="volume-slider" min="0" max="1" value="0.5" step="0.01">
             </div>
             <div class="time-signature">
                 <label for="beats-per-measure">마디 당 박자:</label>
@@ -31,7 +72,10 @@
             </div>
             <div id="beat-indicator-container"></div>
             <button id="start-stop-btn">시작</button>
-            <button id="toggle-chord-panel-btn">코드 연습 켜기</button>
+            <div class="module-toggles">
+                <button id="toggle-rhythm-panel-btn">리듬</button>
+                <button id="toggle-chord-panel-btn">코드</button>
+            </div>
         </div>
 
         <div class="metronome chord-module hidden">
