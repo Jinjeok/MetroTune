@@ -13,27 +13,43 @@
             <input type="range" id="master-volume-slider" min="0" max="1" value="0.5" step="0.01">
             <span id="master-volume-percentage">50%</span>
         </div>
-        <div class="volume-control-wrapper" id="beat-volume-control">
-            <span>BEAT</span>
-            <input type="range" id="beat-volume-slider" min="0" max="1" value="1.0" step="0.01">
-            <span id="beat-volume-percentage">100%</span>
+        
+        <div id="secondary-volume-controls" class="hidden">
+            <div class="volume-control-wrapper" id="beat-volume-control">
+                <span>BEAT</span>
+                <input type="range" id="beat-volume-slider" min="0" max="1" value="1.0" step="0.01">
+                <span id="beat-volume-percentage">100%</span>
+            </div>
+            <div class="volume-control-wrapper" id="rhythm-volume-control">
+                <span>RHYTHM</span>
+                <input type="range" id="rhythm-volume-slider" min="0" max="1" value="0.7" step="0.01">
+                <span id="rhythm-volume-percentage">70%</span>
+            </div>
+            <div class="volume-control-wrapper" id="chord-volume-control">
+                <span>CHORD</span>
+                <input type="range" id="chord-volume-slider" min="0" max="1" value="0.7" step="0.01">
+                <span id="chord-volume-percentage">70%</span>
+            </div>
+            <div class="volume-control-wrapper" id="audio-volume-control">
+                <span>AUDIO</span>
+                <input type="range" id="audio-volume-slider" min="0" max="1" value="0.7" step="0.01">
+                <span id="audio-volume-percentage">70%</span>
+            </div>
         </div>
-        <div class="volume-control-wrapper hidden" id="rhythm-volume-control">
-            <span>RHYTHM</span>
-            <input type="range" id="rhythm-volume-slider" min="0" max="1" value="0.7" step="0.01">
-            <span id="rhythm-volume-percentage">70%</span>
-        </div>
-        <div class="volume-control-wrapper hidden" id="chord-volume-control">
-            <span>CHORD</span>
-            <input type="range" id="chord-volume-slider" min="0" max="1" value="0.7" step="0.01">
-            <span id="chord-volume-percentage">70%</span>
-        </div>
-    </div>
 
+        <button id="toggle-volume-controls-btn">볼륨 조절</button>
+    </div>
     <div class="app-container">
         <div class="metronome rhythm-module hidden">
             <h2>16-Beat Pattern</h2>
+
+            
             <div class="rhythm-grid"></div>
+
+            <div id="rhythm-preview-container" class="hidden">
+                <label class="preview-label">NEXT</label>
+                <div id="rhythm-preview-grid"></div>
+            </div>
             <div class="rhythm-controls">
                 <div class="rhythm-accent-toggle">
                     <input type="checkbox" id="rhythm-accent-checkbox" checked>
@@ -57,12 +73,12 @@
                 <button class="preset-btn" data-bpm="100">100</button>
                 <button class="preset-btn" data-bpm="120">120</button>
             </div>
-
             <div class="bpm-controls">
                 <button id="bpm-minus-btn" class="bpm-btn">-</button>
                 <div class="bpm-display"><span id="bpm-output">120</span> BPM</div>
                 <button id="bpm-plus-btn" class="bpm-btn">+</button>
             </div>
+            <div id="stopwatch-display" style="font-size: 1.2em; color: #333; margin: 10px 0; font-family: monospace;">00:00:00</div>
             <div class="bpm-slider">
                 <input type="range" id="bpm-slider" min="40" max="240" value="120">
             </div>
@@ -72,15 +88,30 @@
             </div>
             <div id="beat-indicator-container"></div>
             <button id="start-stop-btn">시작</button>
+            <div class="audio-upload-container" style="margin-top: 10px;">
+                <input type="file" id="audio-upload-input" accept="audio/*" style="display: none;">
+                <button id="audio-upload-btn" style="width:100%; padding: 10px; border-radius: 5px; border: 1px solid #ccc; background-color: #f0f0f0; cursor: pointer;">오디오 파일 선택</button>
+                <p id="audio-file-name" style="margin-top: 5px; font-size: 0.8em; color: #555;"></p>
+            </div>
+            <div id="audio-progress-container" class="hidden" style="margin-top: 5px; width: 100%;">
+                <input type="range" id="audio-progress-bar" value="0" style="width: 100%;">
+                <div id="audio-time-display" style="display: flex; justify-content: space-between; font-size: 0.8em; margin-top: 2px;">
+                    <span id="audio-current-time">00:00</span>
+                    <span id="audio-duration">00:00</span>
+                </div>
+            </div>
             <div class="module-toggles">
                 <button id="toggle-rhythm-panel-btn">리듬</button>
                 <button id="toggle-chord-panel-btn">코드</button>
             </div>
         </div>
-
+        
         <div class="metronome chord-module hidden">
              <h2>Chord Progression</h2>
-             <div id="chord-display">C</div>
+             <div id="chord-display-wrapper" style="display: flex; justify-content: center; align-items: baseline; gap: 15px;">
+                 <div id="chord-display">C</div>
+                 <span id="next-chord-preview" style="font-size: 1.5em; color: #888;"></span>
+             </div>
              <div class="chord-input-area">
                  <textarea id="chord-input" placeholder="코드 진행 입력 (예: C, G, Am, F)"></textarea>
                  <div class="random-chord-toggle">
@@ -93,7 +124,6 @@
              </div>
         </div>
     </div>
-
     <script src="script.js"></script>
 </body>
 </html>
