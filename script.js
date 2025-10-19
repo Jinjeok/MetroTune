@@ -35,13 +35,26 @@ let progressAnimationId = null;
 let practiceTimeInSeconds = 0;
 let stopwatchIntervalId = null;
 let nextRandomChord = null; 
+let tickBuffer = null;
+let accentBuffer = null;
+let currentSoundPack = 'MetronomeQuartz'; // 기본값
 
 // --- 사운드 데이터 ---
 const noteFrequencies = { 'C4': 261.63, 'D4': 293.66, 'E4': 329.63, 'F4': 349.23, 'G4': 392.00, 'A4': 440.00, 'B4': 493.88, 'C5': 523.25, 'D5': 587.33, 'E5': 659.25, 'F5': 698.46, 'G5': 783.99 };
 const chordDefinitions = { 'C': ['C4', 'E4', 'G4'], 'G': ['G4', 'B4', 'D5'], 'Am': ['A4', 'C5', 'E5'], 'F': ['F4', 'A4', 'C5'], 'Dm': ['D4', 'F4', 'A4'], 'E': ['E4', 'G4', 'B4'] };
 const availableChords = Object.keys(chordDefinitions);
-
+const soundPacks = {
+    'MetronomeQuartz': { accent: 'Perc_MetronomeQuartz_hi.wav', tick: 'Perc_MetronomeQuartz_lo.wav' },
+    'SynthBlock': { accent: 'Synth_Block_A_hi.wav', tick: 'Synth_Block_A_lo.wav' },
+    'DrumStick': { accent: 'Perc_Stick_hi.wav', tick: 'Perc_Stick_lo.wav' },
+    'SynthTick': { accent: 'Synth_Tick_A_hi.wav', tick: 'Synth_Tick_A_lo.wav' },
+    'Clap': { accent: 'Perc_Clap_hi.wav', tick: 'Perc_Clap_lo.wav' },
+    'Glass': { accent: 'Perc_Glass_hi.wav', tick: 'Perc_Glass_lo.wav' },
+    'Keyboard': { accent: 'Perc_Keyboard_hi.wav', tick: 'Perc_Keyboard_lo.wav' },
+    'Snap': { accent: 'Perc_Snap_hi.wav', tick: 'Perc_Snap_lo.wav' }
+};
 // --- HTML 요소 가져오기 ---
+const soundPackSelect = document.getElementById('sound-pack-select'); 
 const masterVolumeSlider = document.getElementById('master-volume-slider');
 const masterVolumePercentage = document.getElementById('master-volume-percentage');
 const beatVolumeSlider = document.getElementById('beat-volume-slider');
@@ -86,7 +99,9 @@ const secondaryVolumeControls = document.getElementById('secondary-volume-contro
 
 // --- 초기화 ---
 initialize();
-function initialize() {
+async function initialize() {
+    populateSoundPackSelect();
+    await loadMetronomeSounds(); 
     masterGain.gain.value = masterVolumeSlider.value;
     beatGain.gain.value = beatVolumeSlider.value;
     rhythmGain.gain.value = rhythmVolumeSlider.value;
@@ -122,6 +137,51 @@ function showToaster(message) {
         toaster.remove();
     }, 2200);
 }
+
+function populateSoundPackSelect() {
+    for (const packName in soundPacks) {
+        const option = document.createElement('option');
+        option.value = packName;
+        option.textContent = packName;
+        if (packName === currentSoundPack) {
+            option.selected = true;
+        }
+        soundPackSelect.appendChild(option);
+    }
+}
+
+async function loadSound(url) {
+    try {
+        // 사운드 파일이 있는 폴더 경로를 지정하세요. 예: 'sounds/'
+        const response = await fetch('sounds/' + url);
+        const arrayBuffer = await response.arrayBuffer();
+        return await audioContext.decodeAudioData(arrayBuffer);
+    } catch (error) {
+        console.error(`'${url}' 파일을 불러오는 중 오류 발생:`, error);
+        return null;
+    }
+}
+
+async function loadMetronomeSounds() {
+    const pack = soundPacks[currentSoundPack];
+    if (!pack) {
+        showToaster('선택한 사운드 팩을 찾을 수 없습니다.');
+        return;
+    }
+    
+    // Promise.all을 사용해 두 사운드를 병렬로 로드
+    [tickBuffer, accentBuffer] = await Promise.all([
+        loadSound(pack.tick),
+        loadSound(pack.accent)
+    ]);
+
+    if (!tickBuffer || !accentBuffer) {
+        showToaster(`'${currentSoundPack}' 사운드 팩 로딩에 실패했습니다.`);
+    }
+}
+
+
+
 
 
 // --- 이벤트 리스너 ---
@@ -260,6 +320,12 @@ randomRhythmCheckbox.addEventListener('change', e => {
     }
 });
 
+soundPackSelect.addEventListener('change', (e) => {
+    currentSoundPack = e.target.value;
+    loadMetronomeSounds(); // 새로운 사운드 팩 로드
+    showToaster(`${currentSoundPack} 사운드로 변경되었습니다.`);
+});
+
 rhythmAccentCheckbox.addEventListener('change', e => { 
     if (!e.target.checked) { 
         rhythmPattern = rhythmPattern.map(state => state === 2 ? 1 : state); 
@@ -281,13 +347,13 @@ function scheduler() {
     timerID = setTimeout(scheduler, 25.0);
 }
 
-function playSound(time, freq, gainNode, type = 'sine', duration = 0.1) {
-    const osc = audioContext.createOscillator();
-    osc.type = type;
-    osc.frequency.setValueAtTime(freq, time);
-    osc.connect(gainNode);
-    osc.start(time);
-    osc.stop(time + duration);
+
+function playSound(time, buffer, gainNode) {
+    if (!buffer) return;
+    const source = audioContext.createBufferSource();
+    source.buffer = buffer;
+    source.connect(gainNode);
+    source.start(time);
 }
 
 function scheduleNoteAndVisual(beat16, time) {
@@ -354,8 +420,10 @@ function scheduleNoteAndVisual(beat16, time) {
             const notes = chordDefinitions[chordToPlay];
             if (notes) { notes.forEach(note => { const freq = noteFrequencies[note]; if (freq) playSound(time, freq, chordGain, 'triangle', 0.4); }); }
         }
-        const currentState = beatStates[quarterBeat];
-        if (currentState > 0) { const freq = currentState === 2 ? 880 : 440; playSound(time, freq, beatGain); }
+        const currentState = beatStates[quarterBeat];if (currentState > 0) {
+            const bufferToPlay = (currentState === 2) ? accentBuffer : tickBuffer;
+            playSound(time, bufferToPlay, beatGain);
+        }
     }
 }
 
