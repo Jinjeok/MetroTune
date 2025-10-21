@@ -5,11 +5,15 @@ masterGain.connect(audioContext.destination);
 
 // --- 각 기능별 게인 노드 설정 ---
 const beatGain = audioContext.createGain();
-const rhythmGain = audioContext.createGain();
+const rhythmGain = audioContext.createGain(); // 슬라이더로 조절되는 게인
+const rhythmBoost = audioContext.createGain(); // ▼▼▼ [추가] 리듬 증폭용 게인 ▼▼▼
 const chordGain = audioContext.createGain();
 const audioGain = audioContext.createGain();
+
 beatGain.connect(masterGain);
-rhythmGain.connect(masterGain);
+rhythmGain.connect(rhythmBoost); // ▼▼▼ [수정] 리듬 게인을 부스트 게인에 연결
+rhythmBoost.connect(masterGain); // ▼▼▼ [추가] 부스트 게인을 마스터에 연결
+rhythmBoost.gain.value = 2.0; // ▼▼▼ [추가] 리듬 소리를 2배로 증폭시킵니다.
 chordGain.connect(masterGain);
 audioGain.connect(masterGain);
 
@@ -38,8 +42,11 @@ let nextRandomChord = null;
 let tickBuffer = null;
 let accentBuffer = null;
 let currentSoundPack = 'MetronomeQuartz'; // 기본값
+let rhythmTickBuffer = null; // 리듬 일반 박자
+let rhythmAccentBuffer = null; // 리듬 강세 박자
+let currentRhythmSoundPack = 'SynthSquare';
 
-// --- 사운드 데이터 ---
+
 const noteFrequencies = { 'C4': 261.63, 'D4': 293.66, 'E4': 329.63, 'F4': 349.23, 'G4': 392.00, 'A4': 440.00, 'B4': 493.88, 'C5': 523.25, 'D5': 587.33, 'E5': 659.25, 'F5': 698.46, 'G5': 783.99 };
 const chordDefinitions = { 'C': ['C4', 'E4', 'G4'], 'G': ['G4', 'B4', 'D5'], 'Am': ['A4', 'C5', 'E5'], 'F': ['F4', 'A4', 'C5'], 'Dm': ['D4', 'F4', 'A4'], 'E': ['E4', 'G4', 'B4'] };
 const availableChords = Object.keys(chordDefinitions);
@@ -53,8 +60,17 @@ const soundPacks = {
     'Keyboard': { accent: 'Perc_Keyboard_hi.wav', tick: 'Perc_Keyboard_lo.wav' },
     'Snap': { accent: 'Perc_Snap_hi.wav', tick: 'Perc_Snap_lo.wav' }
 };
+
+const rhythmSoundPacks = {
+    'SynthSquare': { accent: 'Synth_Square_C_hi.wav', tick: 'Synth_Square_C_lo.wav' },
+    'SynthTick': { accent: 'Synth_Tick_C_hi.wav', tick: 'Synth_Tick_C_lo.wav' },
+    'ClickToy': { accent: 'Perc_ClickToy_hi.wav', tick: 'Perc_ClickToy_lo.wav' },
+    'Glass': { accent: 'Perc_Glass_hi.wav', tick: 'Perc_Glass_lo.wav' }
+};
+
 // --- HTML 요소 가져오기 ---
 const soundPackSelect = document.getElementById('sound-pack-select'); 
+const rhythmSoundPackSelect = document.getElementById('rhythm-sound-pack-select');
 const masterVolumeSlider = document.getElementById('master-volume-slider');
 const masterVolumePercentage = document.getElementById('master-volume-percentage');
 const beatVolumeSlider = document.getElementById('beat-volume-slider');
@@ -97,11 +113,17 @@ const presetBtns = document.querySelectorAll('.preset-btn');
 const toggleVolumeControlsBtn = document.getElementById('toggle-volume-controls-btn'); // [추가]
 const secondaryVolumeControls = document.getElementById('secondary-volume-controls'); // [추가]
 
+
 // --- 초기화 ---
 initialize();
 async function initialize() {
+
     populateSoundPackSelect();
+    populateRhythmSoundPackSelect(); 
+    
     await loadMetronomeSounds(); 
+    await loadRhythmSounds(); 
+
     masterGain.gain.value = masterVolumeSlider.value;
     beatGain.gain.value = beatVolumeSlider.value;
     rhythmGain.gain.value = rhythmVolumeSlider.value;
@@ -150,6 +172,36 @@ function populateSoundPackSelect() {
     }
 }
 
+function populateRhythmSoundPackSelect() {
+    for (const packName in rhythmSoundPacks) {
+        const option = document.createElement('option');
+        option.value = packName;
+        option.textContent = packName;
+        if (packName === currentRhythmSoundPack) {
+            option.selected = true;
+        }
+        rhythmSoundPackSelect.appendChild(option);
+    }
+}
+
+async function loadRhythmSounds() {
+    const pack = rhythmSoundPacks[currentRhythmSoundPack];
+    if (!pack) {
+        showToaster('선택한 리듬 사운드 팩을 찾을 수 없습니다.');
+        return;
+    }
+    
+    // Promise.all을 사용해 두 사운드를 병렬로 로드
+    [rhythmTickBuffer, rhythmAccentBuffer] = await Promise.all([
+        loadSound(pack.tick),
+        loadSound(pack.accent)
+    ]);
+
+    if (!rhythmTickBuffer || !rhythmAccentBuffer) {
+        showToaster(`'${currentRhythmSoundPack}' 리듬 사운드 팩 로딩에 실패했습니다.`);
+    }
+}
+
 async function loadSound(url) {
     try {
         // 사운드 파일이 있는 폴더 경로를 지정하세요. 예: 'sounds/'
@@ -181,7 +233,28 @@ async function loadMetronomeSounds() {
 }
 
 
+function playOscillator(time, freq, gainNode, type = 'sine', duration = 0.1) {
+    // Oscillator (신디사이저) 노드 생성
+    const osc = audioContext.createOscillator();
+    // 소리 크기 조절을 위한 Gain 노드 생성 (클릭 방지용)
+    const env = audioContext.createGain();
 
+    osc.type = type; // 'square', 'triangle' 등
+    osc.frequency.setValueAtTime(freq, time);
+    
+    // 소리 봉투(Envelope) 적용: 짧은 Attack 및 Dureation에 맞춘 Decay
+    env.gain.setValueAtTime(0, time);
+    env.gain.linearRampToValueAtTime(1, time + 0.01); // 0.01초간 Attack
+    env.gain.linearRampToValueAtTime(0, time + duration); // duration에 걸쳐 소리 줄이기
+
+    // 노드 연결
+    osc.connect(env);
+    env.connect(gainNode); // 마스터가 아닌 리듬/코드용 게인 노드에 연결
+    
+    // 재생 및 정지 예약
+    osc.start(time);
+    osc.stop(time + duration);
+}
 
 
 // --- 이벤트 리스너 ---
@@ -326,6 +399,13 @@ soundPackSelect.addEventListener('change', (e) => {
     showToaster(`${currentSoundPack} 사운드로 변경되었습니다.`);
 });
 
+rhythmSoundPackSelect.addEventListener('change', (e) => {
+    currentRhythmSoundPack = e.target.value;
+    loadRhythmSounds();
+    showToaster(`리듬 사운드가 ${currentRhythmSoundPack} (으)로 변경되었습니다.`);
+});
+
+
 rhythmAccentCheckbox.addEventListener('change', e => { 
     if (!e.target.checked) { 
         rhythmPattern = rhythmPattern.map(state => state === 2 ? 1 : state); 
@@ -407,9 +487,8 @@ function scheduleNoteAndVisual(beat16, time) {
     if (isRhythmModeEnabled) {
         const rhythmState = rhythmPattern[beat16];
         if (rhythmState > 0) {
-            const freq = rhythmState === 2 ? 1600 : 1200;
-            const duration = rhythmState === 2 ? 0.08 : 0.05;
-            playSound(time, freq, rhythmGain, 'square', duration);
+            const bufferToPlay = (rhythmState === 2) ? rhythmAccentBuffer : rhythmTickBuffer;
+            playSound(time, bufferToPlay, rhythmGain);
             const cell = rhythmGrid.children[beat16];
             setTimeout(() => { if (cell) { cell.classList.add('playing'); setTimeout(() => cell.classList.remove('playing'), 100); }}, (time - audioContext.currentTime) * 1000);
         }
@@ -418,8 +497,8 @@ function scheduleNoteAndVisual(beat16, time) {
         if (isChordModeEnabled && quarterBeat === 0) {
             const chordToPlay = chords[0]; 
             const notes = chordDefinitions[chordToPlay];
-            if (notes) { notes.forEach(note => { const freq = noteFrequencies[note]; if (freq) playSound(time, freq, chordGain, 'triangle', 0.4); }); }
-        }
+            if (notes) { notes.forEach(note => { const freq = noteFrequencies[note]; if (freq) playOscillator(time, freq, chordGain, 'triangle', 0.4); }); }
+       }
         const currentState = beatStates[quarterBeat];if (currentState > 0) {
             const bufferToPlay = (currentState === 2) ? accentBuffer : tickBuffer;
             playSound(time, bufferToPlay, beatGain);

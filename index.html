@@ -22,8 +22,8 @@
             </div>
             <div class="volume-control-wrapper" id="rhythm-volume-control">
                 <span>RHYTHM</span>
-                <input type="range" id="rhythm-volume-slider" min="0" max="1" value="0.7" step="0.01">
-                <span id="rhythm-volume-percentage">70%</span>
+                <input type="range" id="rhythm-volume-slider" min="0" max="1" value="1.0" step="0.01">
+                <span id="rhythm-volume-percentage">100%</span>
             </div>
             <div class="volume-control-wrapper" id="chord-volume-control">
                 <span>CHORD</span>
@@ -36,9 +36,15 @@
                 <span id="audio-volume-percentage">70%</span>
             </div>
         </div>
-        <div class="sound-select-wrapper">
-            <label for="sound-pack-select">SOUND</label>
-            <select id="sound-pack-select"></select>
+        <div class="sound-select-row-wrapper">
+            <div class="sound-select-wrapper">
+                <label for="sound-pack-select">BEAT</label>
+                <select id="sound-pack-select" class="sound-pack-select-dropdown"></select>
+            </div>
+            <div class="sound-select-wrapper">
+                <label for="rhythm-sound-pack-select">RHYTHM</label>
+                <select id="rhythm-sound-pack-select" class="sound-pack-select-dropdown"></select>
+            </div>
         </div>
         <button id="toggle-volume-controls-btn">볼륨 조절</button>
     </div>
