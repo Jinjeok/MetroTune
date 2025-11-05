@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MetroTune</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="global-controls-container">
+        <div class="volume-control-wrapper" id="master-volume-control">
+            <span>MASTER</span>
+            <input type="range" id="master-volume-slider" min="0" max="1" value="0.5" step="0.01">
+            <span id="master-volume-percentage">50%</span>
+        </div>
+        
+        <div id="secondary-volume-controls" class="hidden">
+            <div class="volume-control-wrapper" id="beat-volume-control">
+                <span>BEAT</span>
+                <input type="range" id="beat-volume-slider" min="0" max="1" value="1.0" step="0.01">
+                <span id="beat-volume-percentage">100%</span>
+            </div>
+            <div class="volume-control-wrapper" id="rhythm-volume-control">
+                <span>RHYTHM</span>
+                <input type="range" id="rhythm-volume-slider" min="0" max="1" value="1.0" step="0.01">
+                <span id="rhythm-volume-percentage">100%</span>
+            </div>
+            <div class="volume-control-wrapper" id="chord-volume-control">
+                <span>CHORD</span>
+                <input type="range" id="chord-volume-slider" min="0" max="1" value="0.7" step="0.01">
+                <span id="chord-volume-percentage">70%</span>
+            </div>
+            <div class="volume-control-wrapper" id="audio-volume-control">
+                <span>AUDIO</span>
+                <input type="range" id="audio-volume-slider" min="0" max="1" value="0.7" step="0.01">
+                <span id="audio-volume-percentage">70%</span>
+            </div>
+        </div>
+        <div class="sound-select-row-wrapper">
+            <div class="sound-select-wrapper">
+                <label for="sound-pack-select">BEAT</label>
+                <select id="sound-pack-select" class="sound-pack-select-dropdown"></select>
+            </div>
+            <div class="sound-select-wrapper">
+                <label for="rhythm-sound-pack-select">RHYTHM</label>
+                <select id="rhythm-sound-pack-select" class="sound-pack-select-dropdown"></select>
+            </div>
+        </div>
+        <button id="toggle-volume-controls-btn">볼륨 조절</button>
+    </div>
+    <div class="app-container">
+        <div class="metronome rhythm-module hidden">
+            <h2>16-Beat Pattern</h2>
+
+            
+            <div class="rhythm-grid"></div>
+
+            <div id="rhythm-preview-container" class="hidden">
+                <label class="preview-label">NEXT</label>
+                <div id="rhythm-preview-grid"></div>
+            </div>
+            <div class="rhythm-controls">
+                <div class="rhythm-accent-toggle">
+                    <input type="checkbox" id="rhythm-accent-checkbox" checked>
+                    <label for="rhythm-accent-checkbox">강약</label>
+                </div>
+                <div class="random-rhythm-toggle">
+                    <input type="checkbox" id="random-rhythm-checkbox">
+                    <label for="random-rhythm-checkbox">랜덤</label>
+                </div>
+            </div>
+            <div class="rhythm-module-footer">
+                <p>각 셀을 클릭하여 리듬을 만드세요.</p>
+            </div>
+        </div>
+
+        <div class="metronome main-metronome">
+            <h1>MetroTune</h1>
+            <div class="bpm-presets">
+                <button class="preset-btn" data-bpm="60">60</button>
+                <button class="preset-btn" data-bpm="80">80</button>
+                <button class="preset-btn" data-bpm="100">100</button>
+                <button class="preset-btn" data-bpm="120">120</button>
+            </div>
+            <div class="bpm-controls">
+                <button id="bpm-minus-btn" class="bpm-btn">-</button>
+                <div class="bpm-display"><span id="bpm-output">120</span> BPM</div>
+                <button id="bpm-plus-btn" class="bpm-btn">+</button>
+            </div>
+            <div id="stopwatch-display" style="font-size: 1.2em; color: #333; margin: 10px 0; font-family: monospace;">00:00:00</div>
+            <div class="bpm-slider">
+                <input type="range" id="bpm-slider" min="40" max="240" value="120">
+            </div>
+            <div class="time-signature">
+                <label for="beats-per-measure">마디 당 박자:</label>
+                <input type="number" id="beats-per-measure" value="4" min="1" max="16">
+            </div>
+            <div id="beat-indicator-container"></div>
+            <button id="start-stop-btn">시작</button>
+            <div class="audio-upload-container" style="margin-top: 10px;">
+                <input type="file" id="audio-upload-input" accept="audio/*" style="display: none;">
+                <button id="audio-upload-btn" style="width:100%; padding: 10px; border-radius: 5px; border: 1px solid #ccc; background-color: #f0f0f0; cursor: pointer;">오디오 파일 선택</button>
+                <p id="audio-file-name" style="margin-top: 5px; font-size: 0.8em; color: #555;"></p>
+            </div>
+            <div id="audio-progress-container" class="hidden" style="margin-top: 5px; width: 100%;">
+                <input type="range" id="audio-progress-bar" value="0" style="width: 100%;">
+                <div id="audio-time-display" style="display: flex; justify-content: space-between; font-size: 0.8em; margin-top: 2px;">
+                    <span id="audio-current-time">00:00</span>
+                    <span id="audio-duration">00:00</span>
+                </div>
+            </div>
+            <div class="module-toggles">
+                <button id="toggle-rhythm-panel-btn">리듬</button>
+                <button id="toggle-chord-panel-btn">코드</button>
+            </div>
+        </div>
+        
+        <div class="metronome chord-module hidden">
+             <h2>Chord Progression</h2>
+             <div id="chord-display-wrapper" style="display: flex; justify-content: center; align-items: baseline; gap: 15px;">
+                 <div id="chord-display">C</div>
+                 <span id="next-chord-preview" style="font-size: 1.5em; color: #888;"></span>
+             </div>
+             <div class="chord-input-area">
+                 <textarea id="chord-input" placeholder="코드 진행 입력 (예: C, G, Am, F)"></textarea>
+                 <div class="random-chord-toggle">
+                     <input type="checkbox" id="random-chords-checkbox">
+                     <label for="random-chords-checkbox">랜덤</label>
+                 </div>
+             </div>
+             <div class="chord-module-footer">
+                <p>코드 기능은 메인 메트로놈의 시작/정지 버튼으로 제어됩니다.</p>
+             </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
