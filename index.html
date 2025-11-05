@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>바이브코딩 - Vibe Coding Platform</title>
+    <title>MetroTune</title>
     <style>
         * {
             margin: 0;
@@ -15,210 +15,121 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
             color: #333;
         }
 
         .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 2rem;
-        }
-
-        .header {
             text-align: center;
-            margin-bottom: 3rem;
-            color: white;
-        }
-
-        .header h1 {
-            font-size: 3rem;
-            margin-bottom: 0.5rem;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-        }
-
-        .header p {
-            font-size: 1.2rem;
-            opacity: 0.9;
-        }
-
-        .tools-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 2rem;
-            margin-bottom: 3rem;
-        }
-
-        .tool-card {
             background: white;
-            border-radius: 15px;
-            padding: 2rem;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            cursor: pointer;
+            border-radius: 20px;
+            padding: 3rem 2rem;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            max-width: 500px;
+            width: 90%;
         }
 
-        .tool-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
-        }
-
-        .tool-card h2 {
-            font-size: 1.8rem;
+        .main-title {
+            font-size: 3rem;
             margin-bottom: 1rem;
             color: #667eea;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
         }
 
-        .tool-card p {
-            font-size: 1rem;
-            line-height: 1.6;
+        .subtitle {
+            font-size: 1.2rem;
             color: #666;
-            margin-bottom: 1.5rem;
+            margin-bottom: 3rem;
         }
 
-        .tool-features {
-            list-style: none;
-            margin-bottom: 1.5rem;
+        .button-group {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
         }
 
-        .tool-features li {
-            padding: 0.3rem 0;
-            color: #555;
-        }
-
-        .tool-features li:before {
-            content: "✓";
-            color: #667eea;
+        .main-button {
+            padding: 1rem 2rem;
+            font-size: 1.2rem;
             font-weight: bold;
-            margin-right: 0.5rem;
+            border: none;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
         }
 
-        .launch-btn {
-            display: inline-block;
-            padding: 0.8rem 2rem;
+        .active-button {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
-            text-decoration: none;
-            border-radius: 25px;
+        }
+
+        .active-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .disabled-button {
+            background: #e0e0e0;
+            color: #999;
+            cursor: not-allowed;
+        }
+
+        .coming-soon {
+            font-size: 0.9rem;
+            color: #ff9800;
             font-weight: bold;
-            transition: transform 0.2s ease;
-        }
-
-        .launch-btn:hover {
-            transform: scale(1.05);
-        }
-
-        .status {
-            display: inline-block;
-            padding: 0.3rem 0.8rem;
-            border-radius: 12px;
-            font-size: 0.8rem;
-            font-weight: bold;
-            margin-left: 0.5rem;
-        }
-
-        .status.live {
-            background: #4CAF50;
-            color: white;
-        }
-
-        .status.coming-soon {
-            background: #FF9800;
-            color: white;
-        }
-
-        .footer {
-            text-align: center;
-            color: white;
-            opacity: 0.8;
-            margin-top: 3rem;
+            margin-top: 0.5rem;
         }
 
         @media (max-width: 768px) {
-            .header h1 {
-                font-size: 2rem;
-            }
-            
-            .tools-grid {
-                grid-template-columns: 1fr;
+            .main-title {
+                font-size: 2.5rem;
             }
             
             .container {
-                padding: 1rem;
+                padding: 2rem 1.5rem;
             }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="header">
-            <h1>🎵 바이브코딩</h1>
-            <p>음악과 코딩이 만나는 크리에이티브 플랫폼</p>
-        </div>
-
-        <div class="tools-grid">
-            <!-- MetroTune -->
-            <div class="tool-card" onclick="window.open('metrotune.html', '_blank')">
-                <h2>🎼 MetroTune <span class="status live">LIVE</span></h2>
-                <p>고급 메트로놈과 리듬 패턴 생성기. 음악 연습과 작곡을 위한 완벽한 도구입니다.</p>
-                <ul class="tool-features">
-                    <li>16비트 리듬 패턴 생성</li>
-                    <li>코드 진행 표시</li>
-                    <li>오디오 파일 동기화</li>
-                    <li>다양한 사운드팩</li>
-                    <li>실시간 볼륨 조절</li>
-                </ul>
-                <a href="metrotune.html" class="launch-btn" onclick="event.stopPropagation()">시작하기</a>
+        <h1 class="main-title">🎵 MetroTune</h1>
+        <p class="subtitle">음악 연습을 위한 완벽한 도구</p>
+        
+        <div class="button-group">
+            <a href="metrotune.html" class="main-button active-button">
+                🎼 메트로놈
+            </a>
+            
+            <div class="main-button disabled-button">
+                🎹 코드 생성기
+                <div class="coming-soon">Coming Soon!</div>
             </div>
-
-            <!-- Chord Progression Generator -->
-            <div class="tool-card">
-                <h2>🎹 Chord Master <span class="status coming-soon">COMING SOON</span></h2>
-                <p>AI 기반 코드 진행 생성기. 장르별 코드 패턴을 학습하고 새로운 진행을 자동 생성합니다.</p>
-                <ul class="tool-features">
-                    <li>장르별 코드 패턴 분석</li>
-                    <li>AI 기반 진행 추천</li>
-                    <li>MIDI 파일 내보내기</li>
-                    <li>화성 이론 가이드</li>
-                    <li>실시간 재생 및 편집</li>
-                </ul>
-                <div class="launch-btn" style="opacity: 0.6; cursor: not-allowed;">개발 중...</div>
+            
+            <div class="main-button disabled-button">
+                🥁 비트 분석기
+                <div class="coming-soon">Coming Soon!</div>
             </div>
-
-            <!-- Beat Pattern Analyzer -->
-            <div class="tool-card">
-                <h2>🥁 Beat Analyzer <span class="status coming-soon">COMING SOON</span></h2>
-                <p>오디오 파일에서 비트 패턴을 분석하고 시각화하는 도구. 복잡한 리듬도 쉽게 이해할 수 있습니다.</p>
-                <ul class="tool-features">
-                    <li>자동 템포 감지</li>
-                    <li>리듬 패턴 추출</li>
-                    <li>비트 그리드 시각화</li>
-                    <li>패턴 매칭 및 분류</li>
-                    <li>MIDI 드럼 맵 생성</li>
-                </ul>
-                <div class="launch-btn" style="opacity: 0.6; cursor: not-allowed;">개발 중...</div>
-            </div>
-        </div>
-
-        <div class="footer">
-            <p>&copy; 2025 바이브코딩. 음악과 기술의 새로운 조화를 만들어갑니다.</p>
         </div>
     </div>
 
     <script>
         // 간단한 애니메이션 효과
         document.addEventListener('DOMContentLoaded', function() {
-            const cards = document.querySelectorAll('.tool-card');
+            const container = document.querySelector('.container');
+            container.style.opacity = '0';
+            container.style.transform = 'translateY(30px)';
             
-            cards.forEach((card, index) => {
-                card.style.opacity = '0';
-                card.style.transform = 'translateY(30px)';
-                
-                setTimeout(() => {
-                    card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
-                    card.style.opacity = '1';
-                    card.style.transform = 'translateY(0)';
-                }, index * 200);
-            });
+            setTimeout(() => {
+                container.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+                container.style.opacity = '1';
+                container.style.transform = 'translateY(0)';
+            }, 100);
         });
     </script>
 </body>
