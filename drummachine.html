@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Drum Machine - MetroTune</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            max-width: 800px;
+            width: 100%;
+        }
+
+        h1 {
+            text-align: center;
+            color: #667eea;
+            margin-bottom: 1rem;
+        }
+
+        .back-button {
+            display: inline-block;
+            margin-bottom: 1rem;
+            padding: 0.5rem 1rem;
+            background: #e0e0e0;
+            border: none;
+            border-radius: 8px;
+            text-decoration: none;
+            color: #333;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .back-button:hover {
+            background: #d0d0d0;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .bpm-control {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .bpm-control input {
+            width: 80px;
+            padding: 0.5rem;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+
+        .play-button {
+            padding: 0.75rem 2rem;
+            font-size: 1.1rem;
+            font-weight: bold;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            transition: all 0.3s ease;
+        }
+
+        .play-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .play-button.playing {
+            background: linear-gradient(135deg, #f44336 0%, #e91e63 100%);
+        }
+
+        .swing-control {
+            margin-bottom: 1.5rem;
+        }
+
+        .swing-control label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .swing-slider {
+            width: 100%;
+            height: 8px;
+            border-radius: 4px;
+            background: #ddd;
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        .swing-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: #667eea;
+            cursor: pointer;
+        }
+
+        .swing-slider::-moz-range-thumb {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: #667eea;
+            cursor: pointer;
+            border: none;
+        }
+
+        .swing-value {
+            text-align: center;
+            font-size: 1.2rem;
+            color: #667eea;
+            font-weight: bold;
+            margin-top: 0.5rem;
+        }
+
+        .sequencer-container {
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+        }
+
+        .track-labels-column {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            flex-shrink: 0;
+        }
+
+        .track-label {
+            font-weight: bold;
+            color: #333;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 50px;
+            padding: 0 1rem;
+            background: #f5f5f5;
+            border-radius: 8px;
+            min-width: 80px;
+        }
+
+        .sequencer {
+            flex: 1;
+            display: grid;
+            grid-template-columns: repeat(16, 1fr);
+            grid-template-rows: repeat(4, 1fr);
+            gap: 6px;
+            min-width: 0;
+        }
+
+        .step {
+            aspect-ratio: 1;
+            border-radius: 8px;
+            background: #e0e0e0;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 2px solid transparent;
+            min-width: 30px;
+        }
+
+        .step:hover {
+            background: #d0d0d0;
+            transform: scale(1.05);
+        }
+
+        .step.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .step.playing {
+            border: 2px solid #ff9800;
+            box-shadow: 0 0 10px rgba(255, 152, 0, 0.5);
+            transform: scale(1.1);
+        }
+
+        .step.beat-marker {
+            background: #f0f0f0;
+        }
+
+        .step.beat-marker.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            .sequencer {
+                gap: 4px;
+            }
+
+            .controls {
+                flex-direction: column;
+            }
+
+            .step {
+                min-width: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="index.html" class="back-button">← 돌아가기</a>
+        <h1>🥁 Drum Machine</h1>
+        
+        <div class="controls">
+            <div class="bpm-control">
+                <label for="bpm">BPM:</label>
+                <input type="number" id="bpm" value="120" min="40" max="240">
+            </div>
+            <button class="play-button" id="playButton">시작</button>
+        </div>
+
+        <div class="swing-control">
+            <label for="swing">Swing: <span class="swing-value" id="swingValue">50%</span></label>
+            <input type="range" id="swing" class="swing-slider" min="0" max="100" value="50">
+        </div>
+
+        <div class="sequencer-container">
+            <div class="track-labels-column">
+                <div class="track-label">하이햇</div>
+                <div class="track-label">스네어</div>
+                <div class="track-label">킥</div>
+                <div class="track-label">탐</div>
+            </div>
+            <div class="sequencer" id="sequencer"></div>
+        </div>
+    </div>
+
+    <script>
+        const tracks = [
+            { name: 'hihat', sound: 'drums/Sp_hihat.wav' },
+            { name: 'snare', sound: 'drums/Sp_snare.wav' },
+            { name: 'kick', sound: 'drums/Drumbkik.wav' },
+            { name: 'tom', sound: 'drums/Drumrkik.wav' }
+        ];
+        const steps = 16;
+        let isPlaying = false;
+        let currentStep = 0;
+        let bpm = 120;
+        let swing = 50;
+        let audioBuffers = {};
+        let audioContext = null;
+
+        // 시퀀서 패턴 저장
+        const pattern = {};
+        tracks.forEach(track => {
+            pattern[track.name] = new Array(steps).fill(false);
+        });
+
+        // 오디오 초기화
+        async function initAudio() {
+            if (!audioContext) {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                
+                // 모든 드럼 샘플 로드
+                for (const track of tracks) {
+                    try {
+                        const response = await fetch(track.sound);
+                        const arrayBuffer = await response.arrayBuffer();
+                        audioBuffers[track.name] = await audioContext.decodeAudioData(arrayBuffer);
+                    } catch (error) {
+                        console.error(`Error loading ${track.name}:`, error);
+                    }
+                }
+            }
+        }
+
+        // 드럼 사운드 재생
+        function playSound(trackName) {
+            if (!audioContext || !audioBuffers[trackName]) return;
+
+            const source = audioContext.createBufferSource();
+            source.buffer = audioBuffers[trackName];
+            
+            const gainNode = audioContext.createGain();
+            gainNode.gain.value = 0.7;
+            
+            source.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            source.start(0);
+        }
+
+        // 시퀀서 그리드 생성
+        const sequencer = document.getElementById('sequencer');
+        tracks.forEach((track) => {
+            for (let i = 0; i < steps; i++) {
+                const step = document.createElement('div');
+                step.className = 'step';
+                if (i % 4 === 0) step.classList.add('beat-marker');
+                step.dataset.track = track.name;
+                step.dataset.step = i;
+                
+                step.addEventListener('click', () => {
+                    pattern[track.name][i] = !pattern[track.name][i];
+                    step.classList.toggle('active');
+                });
+                
+                sequencer.appendChild(step);
+            }
+        });
+
+        // 스윙 타이밍 계산
+        function getStepDelay(stepIndex) {
+            const baseDelay = (60 / bpm) * 1000 / 4; // 16분음표 기준
+            if (stepIndex % 2 === 1) {
+                // 홀수 스텝에 스윙 적용
+                const swingAmount = (swing - 50) / 50; // -1 to 1
+                return baseDelay * (1 + swingAmount * 0.5);
+            }
+            return baseDelay;
+        }
+
+        // 시퀀서 재생
+        function playStep() {
+            if (!isPlaying) return;
+
+            // 이전 스텝 하이라이트 제거
+            document.querySelectorAll('.step.playing').forEach(el => {
+                el.classList.remove('playing');
+            });
+
+            // 현재 스텝의 모든 트랙 확인 및 재생
+            tracks.forEach((track) => {
+                const stepEl = document.querySelector(`[data-track="${track.name}"][data-step="${currentStep}"]`);
+                if (stepEl) {
+                    stepEl.classList.add('playing');
+                }
+                
+                if (pattern[track.name][currentStep]) {
+                    playSound(track.name);
+                }
+            });
+
+            // 다음 스텝으로
+            currentStep = (currentStep + 1) % steps;
+            
+            // 다음 스텝 타이밍 예약
+            const delay = getStepDelay(currentStep);
+            setTimeout(playStep, delay);
+        }
+
+        // 재생/정지 토글
+        document.getElementById('playButton').addEventListener('click', async () => {
+            const button = document.getElementById('playButton');
+            
+            if (!isPlaying) {
+                await initAudio();
+                isPlaying = true;
+                currentStep = 0;
+                button.textContent = '정지';
+                button.classList.add('playing');
+                playStep();
+            } else {
+                isPlaying = false;
+                button.textContent = '시작';
+                button.classList.remove('playing');
+                document.querySelectorAll('.step.playing').forEach(el => {
+                    el.classList.remove('playing');
+                });
+            }
+        });
+
+        // BPM 변경
+        document.getElementById('bpm').addEventListener('change', (e) => {
+            bpm = parseInt(e.target.value);
+        });
+
+        // 스윙 변경
+        document.getElementById('swing').addEventListener('input', (e) => {
+            swing = parseInt(e.target.value);
+            document.getElementById('swingValue').textContent = swing + '%';
+        });
+    </script>
+</body>
+</html>
