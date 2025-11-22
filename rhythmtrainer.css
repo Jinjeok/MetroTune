@@ -1,0 +1,340 @@
+/* Rhythm Trainer Specific Styles */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: #333;
+    margin: 0;
+    padding: 20px;
+}
+
+.trainer-container {
+    background: white;
+    border-radius: 20px;
+    padding: 2rem;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+    max-width: 800px;
+    width: 100%;
+    text-align: center;
+    position: relative;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.back-button {
+    text-decoration: none;
+    color: #666;
+    font-size: 1.2rem;
+    font-weight: bold;
+    transition: color 0.3s;
+}
+
+.back-button:hover {
+    color: #333;
+}
+
+.controls {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+}
+
+.control-group {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+}
+
+.control-group label {
+    font-size: 0.9rem;
+    color: #666;
+    font-weight: bold;
+}
+
+select,
+input[type="number"] {
+    padding: 0.5rem;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 1rem;
+}
+
+.game-area {
+    position: relative;
+    height: 300px;
+    background: #f0f0f0;
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 2rem;
+    border: 2px solid #ddd;
+}
+
+.track {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+}
+
+.lane {
+    width: 2px;
+    background: rgba(0, 0, 0, 0.1);
+    height: 100%;
+    position: relative;
+}
+
+.target-circle {
+    position: absolute;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 60px;
+    border: 4px solid #ff4757;
+    border-radius: 50%;
+    z-index: 10;
+    box-shadow: 0 0 15px rgba(255, 71, 87, 0.5);
+    background: rgba(255, 71, 87, 0.1);
+}
+
+.target-circle::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 8px;
+    height: 8px;
+    background-color: #ff4757;
+    border-radius: 50%;
+}
+
+.pause-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    padding: 5px 15px;
+    background: rgba(0, 0, 0, 0.5);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    z-index: 30;
+    font-size: 0.9rem;
+}
+
+.pause-btn:hover {
+    background: rgba(0, 0, 0, 0.7);
+}
+
+.note {
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    background: #2ed573;
+    border-radius: 50%;
+    transform: translateX(-50%);
+    z-index: 5;
+}
+
+.note::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 8px;
+    height: 8px;
+    background: rgba(0, 0, 0, 0.4);
+    border-radius: 50%;
+    z-index: 6;
+}
+
+.note.hit {
+    background: #ffa502;
+    transform: translateX(-50%) scale(1.2);
+    opacity: 0;
+    transition: all 0.2s;
+}
+
+.note.miss {
+    background: #ff4757;
+    opacity: 0.5;
+}
+
+.beat-line {
+    position: absolute;
+    width: 100%;
+    height: 2px;
+    background-color: rgba(0, 0, 0, 0.2);
+    z-index: 1;
+    pointer-events: none;
+}
+
+.hidden-mode .note {
+    opacity: 0;
+}
+
+.feedback {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 3rem;
+    font-weight: bold;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.2s;
+}
+
+.feedback.perfect {
+    color: #2ed573;
+    text-shadow: 0 0 10px rgba(46, 213, 115, 0.5);
+}
+
+.feedback.good {
+    color: #ffa502;
+    text-shadow: 0 0 10px rgba(255, 165, 2, 0.5);
+}
+
+.feedback.miss {
+    color: #ff4757;
+    text-shadow: 0 0 10px rgba(255, 71, 87, 0.5);
+}
+
+.start-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.9);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 20;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.start-btn {
+    padding: 1rem 3rem;
+    font-size: 1.5rem;
+    background: #667eea;
+    color: white;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.start-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+}
+
+.input-indicator {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: #ddd;
+    margin: 0 auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.5rem;
+    color: white;
+    transition: background 0.1s;
+}
+
+.input-indicator.active {
+    background: #667eea;
+    transform: scale(0.95);
+}
+
+.score-board {
+    display: flex;
+    justify-content: space-around;
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin-top: 1rem;
+}
+
+.score-item span {
+    color: #667eea;
+}
+
+.toggle-btn {
+    padding: 5px 10px;
+    font-size: 0.8rem;
+    background: #eee;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.toggle-btn.active {
+    background: #667eea;
+    color: white;
+    border-color: #5a6fd6;
+}
+
+.target-bar {
+    position: absolute;
+    bottom: 50px;
+    left: 0;
+    width: 100%;
+    height: 10px;
+    background-color: rgba(255, 71, 87, 0.3);
+    border-top: 4px solid #ff4757;
+    border-bottom: 4px solid #ff4757;
+    z-index: 10;
+    box-shadow: 0 0 15px rgba(255, 71, 87, 0.5);
+}
+
+.note.accent {
+    background: #ffd32a;
+    /* Yellow for accent */
+    box-shadow: 0 0 10px rgba(255, 211, 42, 0.6);
+}
+
+.note.bar-shape {
+    width: 100px;
+    height: 20px;
+    border-radius: 5px;
+}
+
+.note.bar-shape::after {
+    width: 100%;
+    height: 2px;
+    background: rgba(0, 0, 0, 0.4);
+    border-radius: 0;
+}
+
+/* Mobile adjustments */
+@media (max-width: 600px) {
+    .trainer-container {
+        padding: 1rem;
+    }
+
+    .game-area {
+        height: 250px;
+    }
+
+    .controls {
+        gap: 0.5rem;
+    }
+}

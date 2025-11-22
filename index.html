@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ko">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -26,7 +27,7 @@
             background: white;
             border-radius: 20px;
             padding: 3rem 2rem;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
             max-width: 500px;
             width: 90%;
         }
@@ -35,7 +36,7 @@
             font-size: 3rem;
             margin-bottom: 1rem;
             color: #667eea;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
         }
 
         .subtitle {
@@ -76,36 +77,128 @@
             .main-title {
                 font-size: 2.5rem;
             }
-            
+
             .container {
                 padding: 2rem 1.5rem;
             }
         }
     </style>
 </head>
+
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MetroTune</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #333;
+        }
+
+        .container {
+            text-align: center;
+            background: white;
+            border-radius: 20px;
+            padding: 3rem 2rem;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+            max-width: 500px;
+            width: 90%;
+        }
+
+        .main-title {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: #667eea;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: #666;
+            margin-bottom: 3rem;
+        }
+
+        .button-group {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .main-button {
+            padding: 1rem 2rem;
+            font-size: 1.2rem;
+            font-weight: bold;
+            border: none;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .active-button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .active-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        @media (max-width: 768px) {
+            .main-title {
+                font-size: 2.5rem;
+            }
+
+            .container {
+                padding: 2rem 1.5rem;
+            }
+        }
+    </style>
+</head>
+
 <body>
     <div class="container">
         <h1 class="main-title">🎵 MetroTune</h1>
         <p class="subtitle">음악 연습을 위한 완벽한 도구</p>
-        
+
         <div class="button-group">
             <a href="metrotune.html" class="main-button active-button">
                 🎼 메트로놈
             </a>
-            
+
             <a href="drummachine.html" class="main-button active-button">
                 🥁 드럼 머신
+            </a>
+
+            <a href="rhythmtrainer.html" class="main-button active-button">
+                🎵 리듬 트레이닝
             </a>
         </div>
     </div>
 
     <script>
         // 간단한 애니메이션 효과
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             const container = document.querySelector('.container');
             container.style.opacity = '0';
             container.style.transform = 'translateY(30px)';
-            
+
             setTimeout(() => {
                 container.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
                 container.style.opacity = '1';
@@ -114,4 +207,5 @@
         });
     </script>
 </body>
+
 </html>
